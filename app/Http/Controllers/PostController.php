@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use Illuminate\Http\Request;
+use  App\Http\Requests\PostRequest;
+use Illuminate\Support\Facades\Validator;
+
 
 class PostController extends Controller
 {
@@ -18,8 +22,30 @@ class PostController extends Controller
         return view('posts.create');
     }
 
-    public function store()
+    public function store(PostRequest $request)
     {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'body' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            return redirect('/posts/create')
+            ->withErrors('$validator')->withInput();
+        }
+
+
+
+
+        // $request->validate([
+        //     'title' => 'required',
+        //     'body' => 'required|min:5'
+        // ],[
+        //     'title.required' => 'gaung sin htae par',
+        //     'body.required' => 'a kyaung yar htae par',
+        //     'body.min' => 'anal sone 5 lone shi ya mal'
+        // ]);
+
         $post = new Post;
         $post->title = request('title');
         $post->body = request('body');
@@ -44,8 +70,18 @@ class PostController extends Controller
         return view('posts.show', compact('post'));
     }
 
-    public function update($id)
+    public function update(PostRequest $request, $id)
     {
+
+        // $request->validate([
+        //     'title' => 'required',
+        //     'body' => 'required'
+        // ],[
+        //     'title.required' => 'gaung sin htae par',
+        //     'body.required' => 'a kyaung yar htae par',
+        //     'body.min' => 'anal sone 5 lone shi ya mal'
+        // ]);
+
         $post = Post::find($id);
         $post->title = request('title');
         $post->body = request('body');
@@ -61,4 +97,17 @@ class PostController extends Controller
 
         return redirect('/posts');
     }
+
+    // public function myValidate($request)
+    // {
+    //     $request->validate([
+    //         'title' => 'required',
+    //         'body' => 'required|min:5'
+    //     ],[
+    //         'title.required' => 'gaung sin htae par',
+    //         'body.required' => 'a kyaung yar htae par',
+    //         'body.min' => 'anal sone 5 lone shi ya mal'
+    //     ]);
+    // }
 }
+
