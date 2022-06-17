@@ -19,7 +19,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/posts">Home</a>
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/posts/create">Create A Post</a>
@@ -33,29 +33,29 @@
     </nav>
 
     <div class="container mt-5">
-        @foreach ($posts as $post)
-            <div>
-                <h3>{{ $post->title }}</h3>
-                <p>{{ date('M d, Y', strtotime($post['updated_at'])) }} by author</p>           
-                <p class="mt-4">{{ $post->body }}</p>
-                <div class="d-flex justify-content-between">
-                    <a href="/posts/{{ $post->id }}" class="btn btn-outline-info">View Detail</a>
-                    <div class="d-flex justify-content-end">
-                    <a href="/posts/{{ $post->id }}/edit/" class="btn btn-outline-success">Edit</a>
-                    <form action="/posts/{{ $post->id }}"
-                        method="POST"
-                        onsubmit="return confirm('Are you sure to delete?')">
-                        @method('DELETE')
-                         <!-- <input type="hidden" name="_method" value="DELETE">  -->
-                        @csrf
-                        <button type="submit" class="btn btn-outline-danger ms-2">Delete</button>
-                    </form>
+        <div class="card">
+            <div class="card-header">
+                <h3>Create A Category</h3>
+            </div>
+            <div class="card-body">
+
+                <form action="/categories" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label">Category Name</label>
+                        <input class="form-control @error('name') is-invalid @enderror" type="text" name="name" value="{{ old('name') }}">
+                        @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
-                </div>
-            </div>       
-            <hr>
-        @endforeach
-       
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-outline-primary">Create</button>
+                        <a href="/categories" class="btn btn-outline-secondary">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">

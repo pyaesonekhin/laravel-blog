@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/posts', [PostController::class, 'index']);
@@ -12,3 +13,39 @@ use Illuminate\Support\Facades\Route;
 // Route::delete('/posts/{id}', [PostController::class, 'destroy']);
 
 Route::resource('posts', PostController::class);
+Route::resource('categories', CategoryController::class);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -95,6 +95,9 @@ class PostController extends Controller
     {
         Post::destroy($id);
 
+        // $post = Post::find($id);
+        // $post->delete();
+
         return redirect('/posts');
     }
 
