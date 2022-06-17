@@ -30,19 +30,19 @@ class PostRequest extends FormRequest
     }
 
 
-    public function messages()
-    {
-        return[
-            'title.required' => 'gaung sin htae par',
-            'body.required' => 'a kyaung yar htae par',
-            'body.min' => 'anal sone 5 lone shi ya mal'
-        ];
-    }
+    // public function messages()
+    // {
+    //     return[
+    //         'title.required' => 'gaung sin htae par',
+    //         'body.required' => 'a kyaung yar htae par',
+    //         'body.min' => 'anal sone 5 lone shi ya mal'
+    //     ];
+    // }
 
     public function attributes()
     {
         return [
-            'body' => 'Content'
+            'body' => 'content'
         ];
     }
 }
