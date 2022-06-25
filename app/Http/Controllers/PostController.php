@@ -46,14 +46,24 @@ class PostController extends Controller
         //     'body.min' => 'anal sone 5 lone shi ya mal'
         // ]);
 
-        $post = new Post;
-        $post->title = request('title');
-        $post->body = request('body');
-        $post->created_at = now();
-        $post->updated_at = now();
-        $post->save();
+        // $post = new Post;
+        // $post->title = request('title');
+        // $post->body = request('body');
+        // $post->created_at = now();
+        // $post->updated_at = now();
+        // $post->save();
 
-        return redirect('/posts');
+        // Post::create([
+        //     'title' => $request->title,
+        //     'body' => $request->body,
+
+        // ]);
+
+        Post::create($request->only(['title', 'body']));
+
+        // session()->flash('success', 'A post was created successful');
+
+        return redirect('/posts')->with('success', 'A post was created successfully');
     }
 
     public function edit($id)
@@ -83,12 +93,22 @@ class PostController extends Controller
         // ]);
 
         $post = Post::find($id);
-        $post->title = request('title');
-        $post->body = request('body');
-        $post->updated_at = now();
-        $post->save();
+        // $post->title = request('title');
+        // $post->body = request('body');
+        // $post->updated_at = now();
+        // $post->save();
 
-        return redirect('/posts');
+
+        // $post->update([
+        //     'title' => $request->title,
+        //     'body' => $request->body,
+        // ]);
+
+        $post->update($request->only(['title', 'body']));
+
+        // session()->flash('success', 'A post was updated successful');
+
+        return redirect('/posts')->with('success', 'A post was updated successfully');
     }
 
     public function destroy($id)
@@ -98,7 +118,7 @@ class PostController extends Controller
         // $post = Post::find($id);
         // $post->delete();
 
-        return redirect('/posts');
+        return redirect('/posts')->with('success', 'A post was deleted successfully');
     }
 
     // public function myValidate($request)

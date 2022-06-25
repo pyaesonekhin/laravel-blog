@@ -12,7 +12,7 @@
             <div class="card-body p-4">
             <h4>{{ $post->title }}</h4>
             <p>{{ $post->body }}</p>
-            <p class="mb-5 mt-3 text-end fw-bold">{{ date('M d, Y', strtotime($post['updated_at'])) }} by author</p>
+            <p class="mb-5 mt-3 text-end fw-bold">{{ $post->created_at->format('M d, Y') }} by author</p>
             <a href="/posts" class="btn btn-outline-secondary d-grid">Go Home</a>
             </div>
         </div>
