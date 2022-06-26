@@ -17,10 +17,11 @@
 @endif
 
 @foreach ($posts as $post)
+
 <div>
 <a href="/posts/{{ $post->id }}"><h3>{{ $post->title }}</h3></a>
     <!-- <p>{{ $post->created_at->format('M d, Y') }} by author</p> -->
-    <p>{{ $post->created_at->diffforHumans() }} by author</p>
+    <i>{{ $post->created_at->diffforHumans() }}</i> by <b>Mark</b>
     <p class="mt-4">{{ $post->body }}</p>
 
     @auth
@@ -38,6 +39,9 @@
     @endauth
 </div>
 <hr>
+
 @endforeach
+
+{{ $posts->links() }}
 
 @endsection

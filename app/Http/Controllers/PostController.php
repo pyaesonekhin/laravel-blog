@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
-use  App\Http\Requests\PostRequest;
+use App\Http\Requests\PostRequest;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::all();
+
+        // $posts = Post::all();
+        $posts = Post::paginate(3);
 
         return view('posts.index', compact('posts'));
     }
@@ -132,5 +134,10 @@ class PostController extends Controller
     //         'body.min' => 'anal sone 5 lone shi ya mal'
     //     ]);
     // }
+
+
+    
+ 
+        
 }
 

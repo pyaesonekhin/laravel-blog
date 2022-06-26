@@ -40,7 +40,7 @@ Route::get('/posts/{id}/edit/', [PostController::class, 'edit'])->middleware('my
 Route::put('/posts/{id}', [PostController::class, 'update'])->middleware('myauth');
 Route::patch('/posts/{id}', [PostController::class, 'update']);
 Route::get('/posts/{id}', [PostController::class, 'show']);
-Route::delete('/posts/{id}', [PostController::class, 'destroy'])->middleware('myauth');
+Route::delete('/posts/{id}', [PostController::class, 'destroy']);
 
 
 // Route::resource('posts', PostController::class);
