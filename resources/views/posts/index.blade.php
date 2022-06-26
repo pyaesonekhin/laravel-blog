@@ -21,7 +21,14 @@
 <div>
 <a href="/posts/{{ $post->id }}"><h3>{{ $post->title }}</h3></a>
     <!-- <p>{{ $post->created_at->format('M d, Y') }} by author</p> -->
-    <i>{{ $post->created_at->diffforHumans() }}</i> by <b>Mark</b>
+    <i>{{ $post->created_at->diffforHumans() }}</i> by <b>{{ $post->name }}
+
+    <!-- @php
+                            $userId = $post->user_id;
+                            $user = \App\Models\User::find($userId);
+                            echo $user->name;
+                @endphp -->
+    </b>
     <p class="mt-4">{{ $post->body }}</p>
 
     @auth
