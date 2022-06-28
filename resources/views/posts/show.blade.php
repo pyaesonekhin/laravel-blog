@@ -12,7 +12,7 @@
             <div class="card-body p-4">
             <h4>{{ $post->title }}</h4>
             <p>{{ $post->body }}</p>
-            <p class="mb-5 mt-3 text-end fw-bold"><i>{{ $post->created_at->format('M d, Y') }}</i> by {{ $post->name }}</p>
+            <p class="mb-5 mt-3 text-end fw-bold"><i>{{ $post->created_at->format('M d, Y') }}</i> by {{ $post->author }}</p>
             <a href="/posts" class="btn btn-outline-secondary d-grid">Go Home</a>
             </div>
         </div>

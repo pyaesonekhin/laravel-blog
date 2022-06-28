@@ -4,22 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
-use App\Http\Requests\PostRequest;
+use  App\Http\Requests\PostRequest;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        
-        
-        // $posts = Post::all();
-        // $posts = Post::paginate(3);
+        // $request->search;
+        // $request->input('search');
+        // $request->get('search');
+        // $request->query('search'); // Get method only
+        // request('search');
 
-        $posts = Post::join('users', 'posts.user_id', '=', 'users.id')
-                ->select('posts.*', 'users.name as name')
-                ->paginate(3);
-                
+        // $posts = Post::all();
+        $posts = Post::where('title', 'like', '%' . $request->search . '%')->orderBy('id', 'desc')->paginate(3);
+        // $posts = Post::select(['posts.*', 'users.name'])
+        // ->join('users', 'users.id', '=', 'posts.user_id')
+        // ->get()
+        // ->toArray();
+        // $posts = Post::select('posts.*', 'users.name as author')
+        // ->join('users', 'users.id', '=', 'posts.user_id')
+        // // ->simplePaginate(3);
+        // ->orderBy('id', 'desc')
+        // ->paginate(3);
+
+        // $posts = DB::table('posts')->join('users', 'users.id', '=', 'posts.user_id')->first();
+
+
         return view('posts.index', compact('posts'));
     }
 
@@ -28,48 +41,58 @@ class PostController extends Controller
         return view('posts.create');
     }
 
+    // use  App\Http\Requests\PostRequest;
+    // use Illuminate\Support\Facades\Validator;
     public function store(PostRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required',
-            'body' => 'required'
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'title' => 'required',
+        //     'body' => 'required',
+        // ]);
 
-        if($validator->fails()) {
-            return redirect('/posts/create')
-            ->withErrors('$validator')->withInput();
-        }
-
-
-
-
+        // if($validator->fails()) {
+        //     return redirect('/posts/create')
+        //     ->withErrors($validator)
+        //     ->withInput();
+        // }
+        // $this->myValidate($request);
+        // Validate
         // $request->validate([
         //     'title' => 'required',
         //     'body' => 'required|min:5'
         // ],[
-        //     'title.required' => 'gaung sin htae par',
-        //     'body.required' => 'a kyaung yar htae par',
-        //     'body.min' => 'anal sone 5 lone shi ya mal'
+        //     'title.required' => 'ခေါင်းစဉ်ထည့်ပါ။',
+        //     'body.required' => 'အကြောင်းအရာထည့်ပါ။',
+        //     'body.min' => 'အနည်းဆုံး ၅လုံးထည့်ပါ။'
         // ]);
 
-        // $post = new Post;
-        // $post->title = request('title');
-        // $post->body = request('body');
+        // request()->all();
+        // $request->all();
+        // request('title')
+
+        // $post = new Post();
+        // // $post->title = request('title');
+        // // $post->body = request('body');
+        // $post->title = $request->title;
+        // $post->body = $request->body;
         // $post->created_at = now();
         // $post->updated_at = now();
         // $post->save();
 
-        // Post::create([
-        //     'title' => $request->title,
-        //     'body' => $request->body,
+       
 
-        // ]);
+        Post::create([
+            'title' =>  $request->title,
+            'body' =>  $request->body,
+            'user_id' => auth()->id(),
+        ]);
 
-        Post::create($request->only(['title', 'body']));
+        // Post::create($request->only(['title', 'body']));
 
-        // session()->flash('success', 'A post was created successful');
+        // $request->session()->flash('success', 'A post was created successfully.');
+        // session()->flash('success', 'A post was created successfully.');
 
-        return redirect('/posts')->with('success', 'A post was created successfully');
+        return redirect('/posts')->with('success', 'A post was created successfully.');
     }
 
     public function edit($id)
@@ -79,45 +102,52 @@ class PostController extends Controller
         return view('posts.edit', compact('post'));
     }
 
-    public function show($id)
-    {
-        // $post = Post::find($id);
-        $post = Post::join('users', 'posts.user_id', '=', 'users.id')
-                ->select('posts.*', 'users.name as name')
-                ->find($id);
-
-        return view('posts.show', compact('post'));
-    }
-
     public function update(PostRequest $request, $id)
     {
-
+        // $this->myValidate($request);
         // $request->validate([
         //     'title' => 'required',
-        //     'body' => 'required'
+        //     'body' => 'required|min:5'
         // ],[
-        //     'title.required' => 'gaung sin htae par',
-        //     'body.required' => 'a kyaung yar htae par',
-        //     'body.min' => 'anal sone 5 lone shi ya mal'
+        //     'title.required' => 'ခေါင်းစဉ်ထည့်ပါ။',
+        //     'body.required' => 'အကြောင်းအရာထည့်ပါ။',
+        //     'body.min' => 'အနည်းဆုံး ၅လုံးထည့်ပါ။'
         // ]);
 
         $post = Post::find($id);
         // $post->title = request('title');
         // $post->body = request('body');
+        // $post->title = $request->title;
+        // $post->body = $request->body;
         // $post->updated_at = now();
         // $post->save();
-
 
         // $post->update([
         //     'title' => $request->title,
         //     'body' => $request->body,
         // ]);
-
         $post->update($request->only(['title', 'body']));
 
-        // session()->flash('success', 'A post was updated successful');
+        // session()->flash('success', 'A post was updated successfully.');
 
-        return redirect('/posts')->with('success', 'A post was updated successfully');
+        return redirect('/posts')->with('success', 'A post was updated successfully.');
+    }
+
+    public function show($id)
+    {
+        // $post = Post::find($id);
+        $post = Post::select(['posts.*', 'users.name as author'])
+        ->join('users', 'users.id', 'posts.user_id')
+        ->where('posts.id', $id)
+        ->first();
+        // ->find($id);
+
+
+        // ->where('posts.id', $id)
+        // ->first();
+
+
+        return view('posts.show', compact('post'));
     }
 
     public function destroy($id)
@@ -127,7 +157,7 @@ class PostController extends Controller
         // $post = Post::find($id);
         // $post->delete();
 
-        return redirect('/posts')->with('success', 'A post was deleted successfully');
+        return redirect('/posts')->with('success', 'A post was deleted successfully.');
     }
 
     // public function myValidate($request)
@@ -136,15 +166,9 @@ class PostController extends Controller
     //         'title' => 'required',
     //         'body' => 'required|min:5'
     //     ],[
-    //         'title.required' => 'gaung sin htae par',
-    //         'body.required' => 'a kyaung yar htae par',
-    //         'body.min' => 'anal sone 5 lone shi ya mal'
+    //         'title.required' => 'ခေါင်းစဉ်ထည့်ပါ။',
+    //         'body.required' => 'အကြောင်းအရာထည့်ပါ။',
+    //         'body.min' => 'အနည်းဆုံး ၅လုံးထည့်ပါ။'
     //     ]);
     // }
-
-
-    
- 
-        
 }
-
