@@ -47,6 +47,10 @@
                     
                     <b>{{ $post->author->name }}</b>
                     <p>{{ $post->body }}</p>
+
+               @foreach($cateposts as $catepost)
+                <p>{{ $catepost->name }}</p>
+                  @endforeach
                     
                     {{-- @if(Auth::check() && $post->user_id == Auth::id()) --}}
                     @if($post->isOwnPost())

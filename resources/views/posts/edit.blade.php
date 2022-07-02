@@ -28,7 +28,19 @@
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
-
+            
+            <div class="mb-3">
+                        <label class="form-label">Post Categories</label>
+                        <select name="categories[]" class="form-select">
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('category_id')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    
             <div class="d-flex justify-content-between">
                 <button type="submit" class="btn btn-outline-primary">Update</button>
                 <a href="/posts" class="btn btn-outline-secondary">Back</a>

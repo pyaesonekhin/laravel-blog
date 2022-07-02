@@ -53,11 +53,18 @@ Route::post('register', [RegisterController::class, 'store']);
 
 Route::get('login', [LoginController::class, 'create']);
 Route::post('login', [LoginController::class, 'store']);
-
 Route::post('logout', [LoginController::class, 'destroy']);
 
-
 Route::get('my-posts', [MyPostController::class, 'index']);
+
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/create', [CategoryController::class, 'create'])->middleware('myauth');
+Route::post('/categories', [CategoryController::class, 'store'])->middleware('myauth');
+Route::get('/categories/{id}/edit/', [CategoryController::class, 'edit'])->middleware('myauth');
+Route::put('/categories/{id}', [CategoryController::class, 'update'])->middleware('myauth');
+Route::patch('/categories/{id}', [CategoryController::class, 'update']);
+Route::get('/categories/{id}', [CategoryController::class, 'show']);
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 
 
 

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Category;
+use App\Models\CategoryPost;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use  App\Http\Requests\PostRequest;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -20,6 +22,13 @@ class PostController extends Controller
 
         // $posts = Post::all();
         $posts = Post::where('title', 'like', '%' . $request->search . '%')->orderBy('id', 'desc')->paginate(3);
+
+        // $posts = Post::select('category_post.*')
+        // ->join('category_post', 'posts.id', 'category_post.post_id')
+        // ->where('title', 'like', '%' . $request->search . '%')
+        // ->orderBy('id', 'desc')
+        // ->paginate(3);
+
         // $posts = Post::select(['posts.*', 'users.name'])
         // ->join('users', 'users.id', '=', 'posts.user_id')
         // ->get()
@@ -32,13 +41,30 @@ class PostController extends Controller
 
         // $posts = DB::table('posts')->join('users', 'users.id', '=', 'posts.user_id')->first();
 
+        // $categories = Category::select('categories.name as name')
+        //     ->join('category_post', 'categories.id', '=', 'category_post.category_id')
+        //     // ->join('posts', 'category_post.post_id', '=', 'posts.id')
+        //     // ->where('category_post.post_id', '=', 'posts.id')
+        //     // ->where('category_post.category_id', '=', 'categories.id')
+        //     ->get();
 
-        return view('posts.index', compact('posts'));
+        $cateposts = CategoryPost::select('category_post.*', 'categories.name as name', 'posts.*')
+        ->join('posts', 'category_post.post_id', 'posts.id')
+        ->join('categories', 'category_post.category_id', 'categories.id')
+        ->where('posts.id', 'category_post.post_id')
+        ->where('categories.id', 'category_post.category_id')
+      
+        ->get();
+
+
+        return view('posts.index', compact('posts', 'cateposts'));
+
     }
 
     public function create()
     {
-        return view('posts.create');
+        $categories = Category::all();
+        return view('posts.create', compact('categories'));
     }
 
     // use  App\Http\Requests\PostRequest;
@@ -81,12 +107,23 @@ class PostController extends Controller
 
        
 
-        Post::create([
+         $post = Post::create([
             'title' =>  $request->title,
             'body' =>  $request->body,
             'user_id' => auth()->id(),
         ]);
 
+       foreach($request->categories as $category)
+       {
+            CategoryPost::create([
+                'post_id' => $post->id,
+                'category_id' => $category
+            ]);
+        }
+
+
+
+        
         // Post::create($request->only(['title', 'body']));
 
         // $request->session()->flash('success', 'A post was created successfully.');
@@ -98,8 +135,8 @@ class PostController extends Controller
     public function edit($id)
     {
         $post = Post::find($id);
-
-        return view('posts.edit', compact('post'));
+        $categories = Category::all();
+        return view('posts.edit', compact('post', 'categories'));
     }
 
     public function update(PostRequest $request, $id)
