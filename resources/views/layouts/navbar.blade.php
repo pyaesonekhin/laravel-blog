@@ -14,7 +14,7 @@
                     <a class="nav-link" href="/posts/create">Create A Post</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/categories/create">Create A Category</a>
+                    <a class="nav-link" href="{{ route('category.create') }}">Create A Category</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/my-posts">My Posts</a>

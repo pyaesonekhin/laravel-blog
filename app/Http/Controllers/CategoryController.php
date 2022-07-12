@@ -1,98 +1,60 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Category;
-use App\Http\Requests\CategoryRequest;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
+      $categories = Category::when(request('search'), function($query) {
+            $query->where('name', 'like', "%" . request('search') . "%");
+        })
+        ->latest('id')
+        ->paginate(7)
+        ->withQueryString();
+
         return view('categories.index', compact('categories'));
     }
 
     public function create()
     {
-        return view('categories.create');
+       return view('categories.create');
     }
 
     public function store(CategoryRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required'
-        ]);
-
-        if($validator->fails()) {
-            return redirect('/categories/create')
-            ->withErrors('$validator')->withInput();
-        }
-
-        // $request->validate([
-        //     'title' => 'required'
-        // ],[
-        //     'title.required' => 'Please fill the title'
-        // ]);
-
-
-        // $category = new Category;
-        // $category->name = request('name');
-        // $category->created_at = now();
-        // $category->updated_at = now();
-        // $category->save();
-
         Category::create([
-            'name' =>  $request->name
+            'name' => $request->name
         ]);
 
-        return redirect('/categories');
+        return redirect('categories')->with('success', 'A category was created successfully.');
     }
 
     public function edit($id)
     {
-        $category = Category::find($id);
+        $category = Category::findOrFail($id);
+
         return view('categories.edit', compact('category'));
     }
 
     public function update(CategoryRequest $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required'
+        $category = Category::findOrFail($id);
+        $category->update([
+            'name' => $request->name
         ]);
 
-        if($validator->fails()) {
-            return redirect('/categories/edit')
-            ->withErrors('$validator')->withInput();
-        }
-
-        // $request->validate([
-        //     'title' => 'required'
-        // ],[
-        //     'title.required' => 'Please fill the title'
-        // ]);
-
-
-        $category = Category::find($id);
-        // $category->name = request('name');
-        // $category->updated_at = now();
-        // $category->save();
-        $category->update($request->only(['name']));
-        return redirect('/categories');
+        return redirect('categories')->with('success', 'A category was updated successfully.');
     }
-
-    public function show($id)
-    {
-        $category = Category::find($id);
-        return view('/categories.show', compact('category'));
-    }
-
 
     public function destroy($id)
     {
-        Category::destroy($id);
-        return redirect('/categories');
+        $category = Category::findOrFail($id);
+        $category->delete();
+
+        return back()->with('success', 'A category was deleted successfully.');
     }
 }
