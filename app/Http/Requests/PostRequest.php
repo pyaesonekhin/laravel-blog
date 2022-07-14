@@ -25,19 +25,21 @@ class PostRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'body' => 'required|min:5'
+            'body' => 'required|min:5',
+            'category_ids' => 'required|array'
         ];
     }
 
 
-    // public function messages()
-    // {
-    //     return[
-    //         'title.required' => 'gaung sin htae par',
-    //         'body.required' => 'a kyaung yar htae par',
-    //         'body.min' => 'anal sone 5 lone shi ya mal'
-    //     ];
-    // }
+    public function messages()
+    {
+        return[
+            // 'title.required' => 'gaung sin htae par',
+            // 'body.required' => 'a kyaung yar htae par',
+            // 'body.min' => 'anal sone 5 lone shi ya mal'
+            'category_ids.required' => 'Choose one or more category'
+        ];
+    }
 
     public function attributes()
     {

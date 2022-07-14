@@ -48,16 +48,8 @@ class PostController extends Controller
         //     // ->where('category_post.category_id', '=', 'categories.id')
         //     ->get();
 
-        $cateposts = CategoryPost::select('category_post.*', 'categories.name as name', 'posts.*')
-        ->join('posts', 'category_post.post_id', 'posts.id')
-        ->join('categories', 'category_post.category_id', 'categories.id')
-        ->where('posts.id', 'category_post.post_id')
-        ->where('categories.id', 'category_post.category_id')
-      
-        ->get();
 
-
-        return view('posts.index', compact('posts', 'cateposts'));
+        return view('posts.index', compact('posts'));
 
     }
 
@@ -107,19 +99,27 @@ class PostController extends Controller
 
        
 
-         $post = Post::create([
-            'title' =>  $request->title,
-            'body' =>  $request->body,
-            'user_id' => auth()->id(),
-        ]);
+        //  $post = Post::create([
+        //     'title' =>  $request->title,
+        //     'body' =>  $request->body,
+        //     'user_id' => auth()->id(),
+        // ]);
 
-       foreach($request->categories as $category)
-       {
-            CategoryPost::create([
-                'post_id' => $post->id,
-                'category_id' => $category
-            ]);
-        }
+        // $post = auth()->user()->posts()->create([
+        //     'title' =>  $request->title,
+        //     'body' =>  $request->body,
+        // ]);
+        $post = auth()->user()->posts()->create($request->only('title', 'body'));
+
+        $post->categories()->attach($request->category_ids);
+
+    //    foreach($request->category_ids as $category)
+    //    {
+    //         CategoryPost::create([
+    //             'post_id' => $post->id,
+    //             'category_id' => $category
+    //         ]);
+    //     }
 
 
 
@@ -135,8 +135,9 @@ class PostController extends Controller
     public function edit($id)
     {
         $post = Post::find($id);
+        $oldCategoryIds = $post->categories->pluck('id')->toArray();
         $categories = Category::all();
-        return view('posts.edit', compact('post', 'categories'));
+        return view('posts.edit', compact('post', 'categories', 'oldCategoryIds'));
     }
 
     public function update(PostRequest $request, $id)
@@ -159,11 +160,18 @@ class PostController extends Controller
         // $post->updated_at = now();
         // $post->save();
 
+       
         // $post->update([
         //     'title' => $request->title,
         //     'body' => $request->body,
         // ]);
         $post->update($request->only(['title', 'body']));
+
+        // $post->categories()->detach($post->categories->pluck('id')->toArray());
+        // $post->categories()->attach($request->category_ids);
+
+        $post->categories()->sync($request->category_ids);
+        // $post->update($request->only(['title', 'body']));
 
         // session()->flash('success', 'A post was updated successfully.');
 

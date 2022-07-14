@@ -21,7 +21,8 @@ class CategoryController extends Controller
 
     public function create()
     {
-       return view('categories.create');
+        $category = new Category;
+       return view('categories.create', compact('category'));
     }
 
     public function store(CategoryRequest $request)
@@ -30,7 +31,7 @@ class CategoryController extends Controller
             'name' => $request->name
         ]);
 
-        return redirect('categories')->with('success', 'A category was created successfully.');
+        return redirect('category')->with('success', 'A category was created successfully.');
     }
 
     public function edit($id)
@@ -47,7 +48,7 @@ class CategoryController extends Controller
             'name' => $request->name
         ]);
 
-        return redirect('categories')->with('success', 'A category was updated successfully.');
+        return redirect('category')->with('success', 'A category was updated successfully.');
     }
 
     public function destroy($id)

@@ -42,12 +42,17 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
     public function myPosts()
     {
         return $this->hasMany(Post::class, 'user_id', 'id');
     }
 
-    public function latestPost()
+    public function latestPosts()
     {
         return $this->myPosts()->orderBy('id', 'desc')->paginate();
     }

@@ -3,6 +3,13 @@
 @section('title', 'Home Page')
 
 @section('content')
+@if(session('success'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+{{ session('success') }};
+<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+
 <div class="container mt-5 pb-5">
 
   <div class="row">
@@ -23,6 +30,20 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
               <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
             </svg> {{ $post->author->name }}
+
+            {{-- @php
+                        $category_ids = DB::table('category_post')
+                        ->where('post_id', $post->id)
+                        ->get()
+                        ->pluck('category_id')
+                        ->toArray();
+                        $categories = \App\Models\Category::whereIn('id', $category_ids)->get();
+                        @endphp --}}
+                        {{-- @foreach ($categories as $category) --}}
+                        {{-- @foreach ($post->categories()->get() as $category) --}}
+                        @foreach ($post->categories as $category)
+                        <span class="badge text-bg-info">{{ $category->name }}</span>
+                        @endforeach
           </p>
           <p class="card-text text-muted">
             {{ $post->body }}
