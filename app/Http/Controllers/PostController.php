@@ -63,6 +63,11 @@ class PostController extends Controller
     // use Illuminate\Support\Facades\Validator;
     public function store(PostRequest $request)
     {
+        $file = $request->file('image');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $dir = public_path('upload/images');
+        $file->move($dir, $filename);
+        
         // $validator = Validator::make($request->all(), [
         //     'title' => 'required',
         //     'body' => 'required',
@@ -105,11 +110,12 @@ class PostController extends Controller
         //     'user_id' => auth()->id(),
         // ]);
 
-        // $post = auth()->user()->posts()->create([
-        //     'title' =>  $request->title,
-        //     'body' =>  $request->body,
-        // ]);
-        $post = auth()->user()->posts()->create($request->only('title', 'body'));
+        $post = auth()->user()->posts()->create([
+            'title' =>  $request->title,
+            'body' =>  $request->body,
+            'image' => '/upload/images/' . $filename,
+        ]);
+        // $post = auth()->user()->posts()->create($request->only('title', 'body', 'image'));
 
         $post->categories()->attach($request->category_ids);
 
@@ -142,6 +148,26 @@ class PostController extends Controller
 
     public function update(PostRequest $request, $id)
     {
+          // Get post by id
+          $post = Post::findOrFail($id);
+
+          // delete old image
+          unlink(public_path($post->image));
+  
+          // upload a image
+          $file = $request->file('image');
+          $filename = time() . '_' . $file->getClientOriginalName();
+          $dir = public_path('upload/images');
+          $file->move($dir, $filename);
+  
+          // update post
+          $post->update([
+              'title' => $request->title,
+              'body' => $request->body,
+              'image' => '/upload/images/' . $filename,
+          ]);
+        $post->categories()->sync($request->category_ids);
+        return redirect('/posts')->with('success', 'A post was updated successfully.');
         // $this->myValidate($request);
         // $request->validate([
         //     'title' => 'required',
@@ -152,7 +178,7 @@ class PostController extends Controller
         //     'body.min' => 'အနည်းဆုံး ၅လုံးထည့်ပါ။'
         // ]);
 
-        $post = Post::find($id);
+        // $post = Post::find($id);
         // $post->title = request('title');
         // $post->body = request('body');
         // $post->title = $request->title;
@@ -165,17 +191,17 @@ class PostController extends Controller
         //     'title' => $request->title,
         //     'body' => $request->body,
         // ]);
-        $post->update($request->only(['title', 'body']));
+        // $post->update($request->only(['title', 'body']));
 
         // $post->categories()->detach($post->categories->pluck('id')->toArray());
         // $post->categories()->attach($request->category_ids);
 
-        $post->categories()->sync($request->category_ids);
+        // $post->categories()->sync($request->category_ids);
         // $post->update($request->only(['title', 'body']));
 
         // session()->flash('success', 'A post was updated successfully.');
 
-        return redirect('/posts')->with('success', 'A post was updated successfully.');
+        // return redirect('/posts')->with('success', 'A post was updated successfully.');
     }
 
     public function show($id)

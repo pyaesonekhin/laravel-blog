@@ -19,7 +19,7 @@
       @if (count($posts) > 0)
       @foreach ($posts as $post)
       <div class="card mb-3">
-        <img src="https://colorlibhub.com/sparkling/wp-content/uploads/sites/52/2013/01/Digital_Menu_Wordpress-1024x737.jpg" class="card-img-top" alt="...">
+        <img src="{{ $post->image }}" class="card-img-top" alt="...">
         <div class="card-body">
           <h5 class="card-title h2">{{ $post->title }}</h5>
           <p class="text-muted">

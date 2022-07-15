@@ -26,7 +26,8 @@ class PostRequest extends FormRequest
         return [
             'title' => 'required',
             'body' => 'required|min:5',
-            'category_ids' => 'required|array'
+            'category_ids' => 'required|array',
+            'image' => 'required|file|mimes:jpg, jpeg, png'
         ];
     }
 

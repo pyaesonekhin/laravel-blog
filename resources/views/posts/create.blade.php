@@ -18,9 +18,18 @@
                 </ul>
                 @endif  -->
 
-    <form action="/posts" method="POST">
+    <form action="/posts" method="POST" enctype="multipart/form-data">
       <!-- <input type="hidden" name="_token" value="{{ csrf_token() }}">  -->
       @csrf
+      <div class="mb-3">
+        <label class="form-label">Post Image</label>
+        <input class="form-control @error('image') is-invalid @enderror" type="file" name="image" value="{{ old('image') }}">
+        @error('image')
+        <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+      </div>
+
+
       <div class="mb-3">
         <label class="form-label">Post Title</label>
         <input class="form-control @error('title') is-invalid @enderror" type="text" name="title" value="{{ old('title') }}">
