@@ -22,7 +22,8 @@
       <div class="card mb-3">
 
       @if($post->images()->exists())
-      <img src="{{ $post->images->first()->path }}" class="card-img-top" alt="...">
+      <!-- <img src="{{ $post->images->first()->path }}" class="card-img-top" alt="..."> -->
+      <img src="{{ Storage::url($post->images->first()->path) }}" class="card-img-top" alt="...">
         @endif
         
         <!-- ?-> null safe operator -->

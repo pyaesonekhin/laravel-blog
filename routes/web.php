@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\MyPostController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MyPostController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\RegisterController;
 
 
 // Route::get('welcome/{lang}', function($lang) {
@@ -67,6 +68,18 @@ Route::get('my-posts', [MyPostController::class, 'index']);
 // Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
 
 Route::resource('category', CategoryController::class);
+
+// Route::get('file/create', function() {
+//     Storage::disk('public')->put('my_dir/a.txt', 'some text');
+// });
+
+// Route::get('file/read', function() {
+//     return Storage::disk('public')->get('my_dir/a.txt');
+// });
+
+// Route::get('file/delete', function() {
+//     Storage::disk('public')->delete('my_dir/a.txt');
+// });
 
 
 
