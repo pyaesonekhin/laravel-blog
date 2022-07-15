@@ -23,7 +23,7 @@ class PostFactory extends Factory
             // 'user_id' => 1
 
             'user_id' => User::inRandomOrder()->first()->id,
-            'image'=> '/upload/images/1.jpg'
+            // 'image'=> '/upload/images/1.jpg'
         ];
     }
 }

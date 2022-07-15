@@ -18,8 +18,17 @@
     <div class="col-md-8">
       @if (count($posts) > 0)
       @foreach ($posts as $post)
+
       <div class="card mb-3">
-        <img src="{{ $post->image }}" class="card-img-top" alt="...">
+
+      @if($post->images()->exists())
+      <img src="{{ $post->images->first()->path }}" class="card-img-top" alt="...">
+        @endif
+        
+        <!-- ?-> null safe operator -->
+        <!-- <img src="{{ isset($post->images[0]) ? $post->images[0]->path : '' }}" class="card-img-top" alt="..."> -->
+        
+        <!-- <img src="{{ $post->image }}" class="card-img-top" alt="..."> -->
         <div class="card-body">
           <h5 class="card-title h2">{{ $post->title }}</h5>
           <p class="text-muted">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\PostImage;
 use App\Models\CategoryPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -63,10 +64,35 @@ class PostController extends Controller
     // use Illuminate\Support\Facades\Validator;
     public function store(PostRequest $request)
     {
-        $file = $request->file('image');
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $dir = public_path('upload/images');
-        $file->move($dir, $filename);
+
+        // post create
+        $post = auth()->user()->posts()->create([
+            'title' =>  $request->title,
+            'body' =>  $request->body
+        ]);
+
+        // multiple image upload
+        foreach($request->file('images') as $file) {
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $dir = public_path('upload/images/');
+            $file->move($dir, $filename);
+
+            PostImage::create([
+                'post_id' => $post->id,
+                'path' => '/upload/images/' . $filename
+            ]);
+        }
+        
+        // category create
+        $post->categories()->attach($request->category_ids);
+
+
+
+
+        // $file = $request->file('image');
+        // $filename = time() . '_' . $file->getClientOriginalName();
+        // $dir = public_path('upload/images');
+        // $file->move($dir, $filename);
         
         // $validator = Validator::make($request->all(), [
         //     'title' => 'required',
@@ -110,14 +136,10 @@ class PostController extends Controller
         //     'user_id' => auth()->id(),
         // ]);
 
-        $post = auth()->user()->posts()->create([
-            'title' =>  $request->title,
-            'body' =>  $request->body,
-            'image' => '/upload/images/' . $filename,
-        ]);
+       
         // $post = auth()->user()->posts()->create($request->only('title', 'body', 'image'));
 
-        $post->categories()->attach($request->category_ids);
+        
 
     //    foreach($request->category_ids as $category)
     //    {
@@ -152,19 +174,32 @@ class PostController extends Controller
           $post = Post::findOrFail($id);
 
           // delete old image
-          unlink(public_path($post->image));
+          foreach($post->images as $image) {
+            unlink(public_path($image->path));
+
+            PostImage::where('post_id', $post->id)->delete();
+          }
+          
   
-          // upload a image
-          $file = $request->file('image');
-          $filename = time() . '_' . $file->getClientOriginalName();
-          $dir = public_path('upload/images');
-          $file->move($dir, $filename);
+          // upload an image
+          foreach($request->images as $file) {
+            // $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $dir = public_path('upload/images');
+            $file->move($dir, $filename);
+
+            PostImage::create([
+                'post_id' => $post->id,
+                'path' => '/upload/images/' . $filename
+            ]);
+          }
+          
   
           // update post
           $post->update([
               'title' => $request->title,
               'body' => $request->body,
-              'image' => '/upload/images/' . $filename,
+            //'image' => '/upload/images/' . $filename,
           ]);
         $post->categories()->sync($request->category_ids);
         return redirect('/posts')->with('success', 'A post was updated successfully.');

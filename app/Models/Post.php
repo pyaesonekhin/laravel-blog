@@ -13,8 +13,7 @@ class Post extends Model
 
     protected $fillable = [
         'title',
-        'body',
-        'image'
+        'body'
     ];
 
     // protected $guarded = [];
@@ -38,5 +37,10 @@ class Post extends Model
     public function categories()
     {
         return $this->belongsToMany(Category::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(PostImage::class);
     }
 }
